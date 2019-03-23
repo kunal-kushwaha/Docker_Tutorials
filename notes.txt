@@ -1,0 +1,20 @@
+Docker is a container platform.
+
+Developer will define all the applications and it’s dependencies etc in a Dockerfile. 
+Dockerfile : Describes steps to create a Docker image. It’s like a recipe with all ingredients and steps necessary in making your dish. 
+This file can be used to create Docker Image. 
+These images can be pulled to create containers in any environment.  
+These images can also be store online at docker hubs.
+When you run docker image you get docker containers. 
+Container will have application with all its dependencies. 
+Containers are runtime instances of docker image.
+
+Docker Image : 
+A Docker image is a file, comprised of multiple layers, used to execute code in a Docker container. ... A container that moves from one Docker environment to another with the same OS will work without changes, because the image includes all of the dependencies needed to execute the code.
+  
+Docker Image is run to create docker container.
+
+In virtualization we have a software called Hypervisor used to create multiple machines on a host operating system. 
+These virtual machines have their own operating system and do not use the host’s operating system. They have some space allocated. Hence wasted of space takes place.
+
+Kitematic : UI for docker 

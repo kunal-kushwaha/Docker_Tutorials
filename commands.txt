@@ -1,0 +1,178 @@
+———————————————————————————————————————————————————————————————————————————————————————
+DOCKER COMMANDS :
+
+basic:
+docker version	// info about Client and Server
+docker -v
+docker info 	// info about Docker installed on system
+docker --help	// Usage : docker images —-help
+docker login	// login to hub.docker.com with what username you created
+
+images : 
+docker images	// gives us list of all the images
+docker pull	// $ docker pull ubuntu : pull image from docker library at 			// hub.docker.com
+docker rmi	// docker rmi imagenameORid	// to delete an image
+
+Containers : 
+docker ps	// to list all running containers
+docker ps -a //to list all containers
+
+docker run
+docker run hello-world	// will not find hello-world on local images hence it will look 			// globally online
+$ docker run -it ubuntu // it is for interactive mode
+// now try commands like ls etc.
+
+docker start
+docker stop	// docker stop containerID
+
+System : 
+docker stats		// details on running containers
+docker system df	// disk usage
+docker system prune	// used to remove UNUSED images, means the ones not running in 			// any container
+
+// dangling images : images are associated with the running container
+
+———————————————————————————————————————————————————————————————————————————————————————
+DOCKER IMAGES : 
+
+Images are the templates used to create Docker containers.
+Basically files which have info about what all things will be required to create a container.
+Container is a running instance of image i.e. when you run an image a container is created.
+Images can be stored locally or remote locations like hub.docker.com 
+
+$ docker pull ubuntu:18.04	// 18.04 is tag (version)
+$ docker images
+$ docker images -q	// -q is quiet flag : only shows numeric id
+$ docker images -f “dangling=false”	// -f is filter flag,
+// dangling images : images are associated with the running container
+$ docker images -f “dangling=false” -q
+
+$ docker run image	// create a container out of an image 
+EX : docker run —name MyUbuntu -it ubuntu bash : // it is interactive mode, bash means start bash shell
+
+$ docker rmi image	// stop container if it is using it
+$ docker rmi -f image	// force stop
+
+$ docker inspect	Ex : $ docker inspect ubuntu
+// here you can see “Layers” i.e. image typically contains a union of layered filesystems on top of each other : images are a stack of layers
+
+Docker can build images automatically by reading instructions from a DockerFile.
+A single image can be used to create multiple containers.
+
+———————————————————————————————————————————————————————————————————————————————————————
+DOCKER CONTAINERS : 
+
+In the Docker Components Diagram : 
+Client: What you are using on your cmd,terminal you are interacting with docker client.
+DOCKER_HOST : On your system
+Registry : Where we have images, like DockerHub etc. 
+
+docker pull : goes to registry and saves the image on your local system on DOCKER_HOST.
+docker run : checks on system if not available it will go to registry and then go to DOCKER_HOST
+docker build : used to create images using docker files and then create a container.
+
+Containers run on the same machine sharing the same OS Kernel, this makes it faster.
+
+Commands : 
+docker ps
+docker run ImageName/ID
+docker start ContainerName/ID 
+docker start ContainerName/ID 
+
+docker pause ContainerName/ID 
+docker unpause ContainerName/ID 
+
+docker top ContainerName/ID 	// shows top processes of that container
+docker stats ContainerName/ID 
+
+docker attach ContainerName/ID 
+
+docker kill ContainerName/ID 
+docker rm ContainerName/ID 
+
+docker history ImageName/ID 
+
+———————————————————————————————————————————————————————————————————————————————————————
+DOCKERFILE : 
+
+A simple text file with instructions to build an image.
+
+Dockerfile -> $ docker build -> Docker Image
+
+Step 1 : Create a file named Dockerfile
+Docker build searches for “Dockerfile”. ofc we can change the name.
+
+FROM ubuntu	# getting base image ubuntu	// wont find in our local storage then 						// it will look globally like before
+# FROM SCRATCH	: SCRATCH is an empty image if you dont want to use base image
+
+MAINTAINER kunal kushwaha <kunalkushwaha@gmail.com>
+
+RUN apt-get update	# run this command on image (since it is ubuntu)
+			# RUN GETS EXECUTED DURING THE BUILDING OF THE IMAGE
+
+CMD [“echo”, “Hello World”]	# if you want to run something on cmd during container 				# creation
+				# CMD COMMAND ONLY GETS EXECUTED WHEN YOU CREATE A 				# CONTAINER OUT OF THE IMAGE
+
+To Run : (run this to make dockerfile into image)
+$ docker build .
+OR
+$ docker build -t myimage:1.0 .	// -t is for giving tags like name
+$ docker run ImageID	// will run the commands in CMD in Dockerfile
+
+Useful Link : 
+https://github.com/wsargent/docker-cheat-sheet#dockerfile
+https://docs.docker.com/engine/reference/builder/#environment-replacement
+
+———————————————————————————————————————————————————————————————————————————————————————
+DOCKER COMPOSE : 
+
+: tool for defining & running multi-container docker applications
+: use yaml files to configure application services (docker-compose.yml)
+: can start all services with a single command : docker compose up
+: can stop all services with a single command : docker compose down
+: can scale up selected services when required
+
+Step 1 : Install Docker Compose (already installed on windows and mac with Docker)
+$ docker-compose --v OR $ docker-compose --version
+$ docker-compose version
+
+Step 2 : Create docker compose file at any location on your system docker-compose.yml
+
+services: 
+  
+  web: 	// name of first service
+    image: nginx	// image from where it has to take (can take from docker.hub)
+    ports:
+    - 9090:80	
+	// expose the port 80 of webserver and expose it on port 9090 of my host 	// machine. Can go to localhost://9090
+
+  // other service
+  database:
+    image: redis
+
+
+
+Step 3 : Check the validity of file by : $ docker-compose config	// if you see file contents then it’s fine and you can start using it
+
+// will give error if no version is specified in docker-compose.yml
+// https://docs.docker.com/compose/compose-file/
+
+Step 4 : Run docker-compose.yml file by :
+$ docker-compose up -d	// -d is detached mode
+// this command will pull images and download them
+$ docker ps : now we can see our containers running here
+
+$ docker-compose --help : here we can see ‘scale’
+scale : Set number of containers for a service
+$ docker-compose up -d --scale database=4
+$ docker ps	// can see 4 databases here
+
+Step 5:
+// to stop : 
+$ docker-compose down
+
+———————————————————————————————————————————————————————————————————————————————————————
+
+
+
+

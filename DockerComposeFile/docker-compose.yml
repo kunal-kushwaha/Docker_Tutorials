@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+    web:
+        image: nginx
+        ports:
+        - 9090:80
+
+    database:
+        image: redis
