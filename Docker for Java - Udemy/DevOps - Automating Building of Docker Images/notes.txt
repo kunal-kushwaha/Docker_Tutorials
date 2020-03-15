@@ -1,0 +1,64 @@
+Maven is a build tool.
+Fabric8 is a maven plugin for building Docker images.
+
+Setup fabric8 plugin in POM :
+
+<properties>
+    // this is your docker account name on dockerhub
+    <docker.image.prefix>comkunal</docker.image.prefix>
+
+    // this is your project name
+    <docker.image.name>springbootdocker</docker.image.name>
+</properties>
+
+<plugin>
+	<groupId>io.fabric8</groupId>
+	<artifactId>docker-maven-plugin</artifactId>
+	<version>0.20.0</version>
+	<configuration>
+        <!--<dockerHost>http://127.0.0.1:2375</dockerHost>-->   // for Docker running on localhost
+
+        <dockerHost>unix:///var/run/docker.sock</dockerHost>
+        // Docker Daemon stays in the background listening to docker commands.
+
+
+        <verbose>true</verbose> // to see additional output of whats going on with Docker
+
+        // Images we are going to be building with Docker
+		<images>
+			<image>
+				<name>${docker.image.prefix}/${docker.image.name}</name>
+				<build>
+					<dockerFileDir>${project.basedir}/src/main/docker/</dockerFileDir> // docker directory to tell plugin where your docker file is
+
+                    <!--copies artifact to docker build dir in target-->
+					<assembly>
+						<descriptorRef>artifact</descriptorRef>
+                        // will copy build artifacts into the target directory
+                        // if this is not present, then it will not build it in target directory
+					</assembly>
+					<tags>
+                        // tag plugin to the docker image that it's building
+                        // when you build it, you will get two tags in the image
+						<tag>latest</tag>
+						<tag>${project.version}</tag>
+					</tags>
+				</build>
+			</image>
+		</images>
+	</configuration>
+</plugin>
+
+Now to build Docker image from Dockerfile in Maven :
+$  mvn clean package docker:build   // run package first
+
+Dockerfile Used :
+FROM centos         // run centos image
+RUN yum install -y java         // -y is default yes. we had to choose y/N while building image. This will choose yes to all.
+Volume /tmp         // this is where springboot will store temp files
+ADD /spring-boot-web-0.0.1-SNAPSHOT.jar myapp.jar       // add from current directory as myapp.jar
+RUN sh -c 'touch /myapp.jar'        // will update date on the jar file
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/myapp.jar"]       // command image will run when it's in the container
+
+
+Now do $ docker images and you'll see two same images with different versions (cuz two tags were provided)

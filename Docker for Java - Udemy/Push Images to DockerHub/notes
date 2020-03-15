@@ -1,0 +1,19 @@
+1. $ docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: kunalkushwaha99
+Password:
+Login Succeeded
+
+2. Create repository on dockerhub
+
+3. tag image with the repository name that you specified in dockerhub
+$ docker images
+
+$ docker tag 5976dac61f4f kunalkushwaha99/docker-demo   // tag will be latest by default, you can specifiy anything
+// same as :
+$ docker tag 5976dac61f4f kunalkushwaha99/docker-demo:latest
+
+$ docker images         // here you can see your image is tagged
+
+4. Push this image to repository
+$ docker push kunalkushwaha99/docker-demo

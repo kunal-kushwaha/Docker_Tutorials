@@ -1,0 +1,43 @@
+For example : Map the container port 8080 to localhost 8080
+<plugin>
+	<groupId>io.fabric8</groupId>
+	<artifactId>docker-maven-plugin</artifactId>
+	<version>0.20.0</version>
+        ...
+			<image>
+				...
+                <run>
+                    <ports>
+                        <port>8080:8080</port>  // just like cmd when we used -p
+                    </ports>
+                </run>
+			</image>
+</plugin>
+
+$ mvn docker:run    // runs in interactive mode
+$ mvn docker:start  // like $ docker run -d image   // runs in background
+$ mvn docker:stop
+All of this is through fabric8 plugin.
+
+Almost everything that you can do in cmd you can add in the maven POM.
+
+In POM add the following in the <plugin> tag of the docker-maven-plugin :
+<executions>
+    <execution>
+        <id>start</id>
+        <phase>pre-integration-test</phase> // Before IT build the image and start the image
+        <goals>
+            <!-- "build" should be used to create the images with the
+                 artifact -->
+            <goal>build</goal>
+            <goal>start</goal>
+        </goals>
+    </execution>
+    <execution>
+        <id>stop</id>
+        <phase>post-integration-test</phase>    // stop containers after the tests are finished
+        <goals>
+            <goal>stop</goal>
+        </goals>
+    </execution>
+</executions>

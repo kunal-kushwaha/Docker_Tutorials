@@ -1,0 +1,21 @@
+Preparing CentOS for Java Development :
+CentOS is full featured Linux distribution that works in the container.
+CentOS does not have Java installed by default. Install Java.
+$ docker run -d centos // no containers run as containers run on commands, till the last command is running. But here no command is passed.
+$ docker run -d centos tail -f /dev/null // giving it a command that will never end
+Now if you do $ docker ps you can see the container running
+$ docker exec -it gracious_volhard bash // gracious_volhard is container name
+# ps -ef
+# yum install java // download and install java from yum repository for this centos image
+
+Dockerfile :
+FROM centos         // run centos image
+RUN yum install -y java         // -y is default yes. we had to choose y/N while building image. This will choose yes to all.
+Volume /tmp         // this is where springboot will store temp files
+ADD /spring-boot-web-0.0.1-SNAPSHOT.jar myapp.jar       // add from current directory as myapp.jar
+RUN sh -c 'touch /myapp.jar'        // will update date on the jar file
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/myapp.jar"]       // command image will run when it's in the container
+
+$ docker build -t spring-boot-docker .  // -t means tag, tag the image with spring-boot-docker, . means look for Dockerfile in cwd
+This will create an image with the name spring-boot-docker and an Image ID ofc. Check by doing $ docker images
+$ docker run -d -p 8080:8080 spring-boot-docker      // -d to run in background process

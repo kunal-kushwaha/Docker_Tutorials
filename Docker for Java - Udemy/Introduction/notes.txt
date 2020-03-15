@@ -1,0 +1,3 @@
+Docker Port : internal port on which application is running
+Published IP:PORT - port exposed to Docker Port
+Docker Port is mapped to Published IP:PORT

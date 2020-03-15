@@ -1,0 +1,46 @@
+$ docker run -p 27017:27017 -d mongo
+-p is for port mapping means 27017 is exposed to host port 27017 means
+applications will be able to be used without a link to docker container.
+Image id is the first 12 characters of the sha256 hash value of the first layer.
+See layers by $ docker inspect mongo
+Look up DockerImages.pdf
+
+Docker Files are used to build Docker Images.
+
+Dockerfile:
+
+FROM ubuntu:xenial  // asking for a specific image of the ubuntu image out of
+the docker repository by using tagname xenial
+
+Multiple RUN commands in Dockerfile mean that it will create those layers in the image.
+Each RUN is one layer. And each RUN specifies commands. Hence each layer specifies
+set of commands.
+
+FROM scratch // scratch is base image
+
+If say image mongo is dependent on image Debian, then the initial files or layers
+will be shared with both mongo and debian on the local machine. Look up MongoDeb.png
+This makes sharing containers and images running on same hardware easy.
+
+Layers are immutable but the last layer can be used to write out data to.
+Thats how non persistent container storage works.
+If we bounce that container will the data be saved or lost?
+The data will be lost! Because when the container went down and we brought it
+back up, the last layer got created again as a new layer.
+This helps in development if you dont want to store record for each test.
+
+Assigning Storage:
+Tell the mongo instance to map to a specific directory on the host machine.
+$ docker run -p 27017:27017 -v /Users/jt/dockerdata/mongo:/data/db -d mongo
+-v is for volume
+-d is for daemon (make sure -d is last one) means run the image as background process
+Map directory /Users/jt/dockerdata/mongo on local machine to /data/db of Mongo
+
+Seeing console output of docker container :
+$ docker logs <container name>
+tail the console output of a running docker container :
+$ docker logs -f <container name>
+Specify environment variable for a docker container :
+$ docker run -e MY_VAR=my_prop <image name>
+Shell into a running docker container :
+$ docker exec -it <container name> bash // -it is for interactive mode
